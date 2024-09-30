@@ -1,0 +1,202 @@
+package layoutManager;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class exempleGridLayout extends JFrame{
+	
+	JPanel nPanel;  //haut
+	JPanel sPanel;   //bas
+	JPanel cPanel;   //centre
+	JButton b1,b2;    //b1:envoyer , b2:annuler
+	JPanel mainPanel; 
+	
+	private JTextField text1;  //champs de saisie
+    private JTextField text2;
+    private JTextField text3;
+    private JTextField text4;
+	
+	
+	public exempleGridLayout()
+	{
+		 
+	    
+		this.setTitle("Exemple de Grid Layout");
+		this.setSize(500,500);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//initialiser nPanel
+		
+		nPanel=new JPanel(new FlowLayout(1,15,15));
+		nPanel.setBackground(Color.pink);
+		JLabel label1 = new JLabel("Info du client");
+		nPanel.add(label1);
+		
+		
+		//initialiser sPanel
+		sPanel=new JPanel(new FlowLayout(1,15,15));
+		sPanel.setBackground(Color.pink);
+		JLabel label2 = new JLabel("Réalisé par : Ilham Boumlal");
+		sPanel.add(label2);
+		
+		//initianliser cPanel
+		cPanel=new JPanel();
+		cPanel.setBackground(Color.cyan);
+		
+		//btn de verification de remplissage des champs
+		b1=new JButton("Envoyer"); 
+		b2=new JButton("Annuler");
+		//label
+		JLabel label_1 = new JLabel("Nom:");
+		JLabel label_2 = new JLabel("Prenom : ");
+		JLabel label_3 = new JLabel("age : ");
+		JLabel label_4 = new JLabel("Adresse: ");
+				
+		//champs de saisie
+		 text1 = new JTextField();	
+	     text2 = new JTextField();
+		 text3 = new JTextField();
+		 text4 = new JTextField();
+		
+		
+		cPanel.setLayout(new GridLayout(7,2,15,15));//15,15 espacemt horizontale et espcmt verticale
+		
+		
+		//Ajouter deux label vides pour centrer les composants de cPanel
+		cPanel.add(new JLabel());
+		cPanel.add(new JLabel());
+		cPanel.add(label_1);
+		//decalage à droite de label
+		label_1.setHorizontalAlignment(JLabel.RIGHT);
+		label_1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 80));
+		cPanel.add(text1);
+		
+		cPanel.add(label_2);
+		label_2.setHorizontalAlignment(JLabel.RIGHT);
+		label_2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 70));
+		cPanel.add(text2);
+		cPanel.add(label_3);
+		label_3.setHorizontalAlignment(JLabel.RIGHT);
+		label_3.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 70));
+		cPanel.add(text3);
+		cPanel.add(label_4);
+		label_4.setHorizontalAlignment(JLabel.RIGHT);
+		label_4.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 80));
+		cPanel.add(text4);
+		b1.setBackground(Color.LIGHT_GRAY);
+		
+		cPanel.add(b1);
+		b2.setBackground(Color.LIGHT_GRAY);
+		cPanel.add(b2);
+		
+		//initianliser mainPanel
+        mainPanel=new JPanel(new BorderLayout());
+        mainPanel.add(nPanel,BorderLayout.NORTH);
+        mainPanel.add(sPanel,BorderLayout.SOUTH);
+        mainPanel.add(cPanel,BorderLayout.CENTER);
+		
+		//envoyer les données vers un fichier
+        b1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(estRempli(text1) && !containsOnlySpaces(text1.getText()) && estRempli(text2) && !containsOnlySpaces(text2.getText()) && estRempli(text3) && !containsOnlySpaces(text3.getText()) && estRempli(text4) && !containsOnlySpaces(text4.getText()))
+				{
+					 JOptionPane.showMessageDialog(null, "Tous les champs sont remplis !");
+	                 enregistrerDansFichier("donnees.txt");
+	                } else if (estRempli(text1) && containsOnlySpaces(text1.getText()) || estRempli(text2) && !containsOnlySpaces(text2.getText()) || estRempli(text3) && containsOnlySpaces(text3.getText()) || estRempli(text4) && containsOnlySpaces(text4.getText())) {
+	                    JOptionPane.showMessageDialog(null, "Tous les champs doivent être remplis !");
+	                }
+				}
+				
+			}
+		);
+        // programmer le bouton annuler
+        b2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                text1.setText("");
+                text2.setText("");
+                text3.setText("");
+                text4.setText("");
+            }
+        });
+		
+		
+		
+		
+		
+		this.setContentPane(mainPanel);
+		this.setVisible(true);
+	}
+	//enregistrement de donnees dans un fichier
+	/*public void enregistrerDansFichier(String nomFichier) {
+		FileWriter f=new FileWriter("donnee.txt");
+		PrintWriter stylo=new PrintWriter(f);
+		stylo.print("nom:"+text1.getText());
+		stylo.print("prenom:"+text1.getText());
+		stylo.close();
+		f.close();
+		
+	}*/
+	public void enregistrerDansFichier(String nomFichier) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(nomFichier));
+            writer.write("Champ 1 : " + text1.getText());
+            writer.newLine();
+            writer.write("Champ 2 : " + text2.getText());
+            writer.newLine();
+            writer.write("Champ 3 : " + text3.getText());
+            writer.newLine();
+            writer.write("Champ 4 : " + text4.getText());
+            writer.newLine();
+            writer.close();
+            JOptionPane.showMessageDialog(null, "Données enregistrées dans le fichier.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Erreur lors de l'enregistrement dans le fichier : " + e.getMessage());
+        }
+    }
+	// estRempli
+	public boolean estRempli(JTextField text)
+	{
+		return !text.getText().isEmpty();
+	}
+	
+	public static boolean containsOnlySpaces(String input) {
+        // Expression régulière pour vérifier si la chaîne contient uniquement des espaces
+        String regex = "^\\s+$";
+        
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        
+        return matcher.matches();
+    }
+	       
+	public static void main(String[] args) {
+		
+		new exempleGridLayout();
+	}
+
+}
