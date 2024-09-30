@@ -1,0 +1,127 @@
+package layoutManager;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class exempleBorderlayout extends JFrame  implements ActionListener{
+
+	
+	JButton b1,b2,b3,b4,b5,b6;
+	JPanel mainPanel,nPanel,cPanel,sPanel;
+	Color couleur=Color.yellow;
+	String activeForm="cercle";
+	public exempleBorderlayout()
+	{
+		this.setTitle("Exemple de border Layout");
+		this.setSize(500,3500);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//initialisation des composants
+		b1=new JButton("Rouge"); b1.addActionListener(this);
+		b2=new JButton("Bleu");	b2.addActionListener(this);
+		b3=new JButton("Vert");	b3.addActionListener(this);
+		b4=new JButton("Rose");	b4.addActionListener(this);
+		b5=new JButton("carré"); b5.addActionListener(this);
+		b6=new JButton("cercle");	b6.addActionListener(this);
+		//initialiser nPanel
+		
+		nPanel=new JPanel(new FlowLayout(1,20,30));
+		nPanel.add(b1);
+		nPanel.add(b2);
+		nPanel.add(b3);
+		nPanel.add(b4);
+		
+		//initialiser sPanel
+		
+		sPanel=new JPanel(new FlowLayout(1,20,30));
+		sPanel.add(b5);
+		sPanel.add(b6);
+		nPanel.setBackground(Color.orange);
+	    //initialiser cPanel(centre)
+		
+		cPanel=new JPanel()
+		{
+			@Override
+			public void paint(Graphics g) {
+				super.paint(g);
+				g.setColor(couleur);
+				if(activeForm.equals("cercle"))
+					g.fillOval(cPanel.getWidth()/2-100, cPanel.getHeight()/2-100, 200, 200);
+				
+				else
+				    g.fillRect(cPanel.getWidth()/2-100, cPanel.getHeight()/2-100, 200, 200);
+				
+			}
+				};
+		cPanel.setBackground(Color.cyan);
+		
+		
+		//initialisation le borderlayout mainPanel
+		mainPanel=new JPanel(new BorderLayout());
+		
+		mainPanel.add(nPanel,BorderLayout.NORTH);
+		mainPanel.add(sPanel,BorderLayout.SOUTH);
+		mainPanel.add(cPanel,BorderLayout.CENTER);
+		
+		
+		
+		
+		this.setContentPane(mainPanel);
+		this.setVisible(true);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static void main(String[] args) {
+		new exempleBorderlayout();
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if(e.getSource()==b1) couleur=Color.red;
+		if(e.getSource()==b2) couleur=Color.blue;
+		if(e.getSource()==b3) couleur=Color.green;
+		if(e.getSource()==b4) couleur=Color.pink;
+		if(e.getSource()==b5) activeForm="carré";
+		if(e.getSource()==b6) activeForm="cercle";
+		
+		repaint();
+		
+	}
+	
+//grid layout
+	//envoyer-->tous les chapms sont remplis(fichier texte/basedonnee)
+	//jtextefill :les champs
+	//jouer X O
+}
