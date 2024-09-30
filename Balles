@@ -1,0 +1,139 @@
+package seance6_jeu;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Random;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+//tetris
+
+public class Balles extends JFrame {
+
+	JPanel notrePanneau;
+	Timer horloge;
+	ArrayList<Cercle> listeCercles= new ArrayList<Cercle>();
+	public Balles()
+	{
+		this.setTitle("Balles !");
+		this.setSize(800,500);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		//récuperer le panneau et le couleurer
+		//this.getContentPane().setBackground(Color.yellow);++
+		
+		
+		//programmation de la zone de dessin;JPanel
+		notrePanneau=new JPanel() 
+		{
+			@Override
+			public void paint(Graphics g) {
+				super.paint(g);
+				for(Cercle c:listeCercles)
+				{
+					g.setColor(c.couleur);
+					g.fillOval(c.x,c.y,c.diam,c.diam);
+				}
+				
+				//g.fillOval(350, 200, 150, 150);
+				//** peut etre ici
+			}
+			
+		};
+		notrePanneau.setBackground(Color.blue);//** == ++
+		this.setContentPane(notrePanneau);
+		
+		//Programmation de l'horloge(timer)
+		horloge=new Timer(300,new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for(Cercle c:listeCercles)
+				{
+					if(c.x + c.dx <0 || (c.x +c.dx + c.diam)>notrePanneau.getWidth())
+						c.dx *=-1;
+					
+					if(c.y + c.dy <0 || (c.y + c.dy + c.diam)>notrePanneau.getHeight())
+						c.dy *=-1;
+					c.x=c.x + c.dx;
+					c.y=c.y + c.dy;
+				}
+				
+				
+				repaint();
+			}
+		});
+		horloge.start();
+		
+		
+		notrePanneau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				Random random=new Random();
+				for(int i=0;i<10;i++)
+				{
+					int diam=random.nextInt(10,80);
+					int x=e.getX()-diam/2;
+					int y=e.getY()-diam/2;
+					int dx=random.nextInt(-20,20);
+					int dy=random.nextInt(-20,20);
+					
+					Color color=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+					listeCercles.add(new Cercle(x,y,diam,dx,dy,color));
+				}
+				repaint();
+			}
+		});
+		//programmer le boutton
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				super.windowClosing(e);
+				System.out.println("Fermeture de la fenetre");
+				if(JOptionPane.showConfirmDialog(null, "Voulez vous sauvegardez votre dessin ?")==0)
+				{
+					System.out.println("Sauvegarder");
+				}
+			}
+			@Override
+			public void windowOpened(WindowEvent e) {
+				super.windowOpened(e);
+				System.out.println("opened !");
+			}
+			
+		});
+		setVisible(true);
+	}
+	//******classe cercle*****
+	 class Cercle
+	{
+		int x,y,diam,dx,dy;//pixels
+		Color couleur;
+		public Cercle(int x, int y, int diam, int dx,int dy, Color couleur) {
+			super();
+			this.x = x;
+			this.y = y;
+			this.diam = diam;
+			this.dx = dx;
+			this.dy=dy;
+			this.couleur = couleur;
+		}
+		
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		new Balles();
+		
+	}
+
+}
