@@ -1,0 +1,181 @@
+package layoutManager;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+
+public class TicTacToe extends JFrame implements ActionListener{
+	JPanel dPanel;  //droit
+	JPanel cPanel;   //centre
+	JPanel mainPanel;
+	
+	JLabel text; 
+	JButton[] buttons;
+	Random random=new Random(2);
+	boolean premierJoueur=false;
+	
+	public TicTacToe()
+	{
+		this.setTitle("Game TicTacToe");
+		this.setSize(600,600);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		//initialiser dPanel
+		
+		dPanel=new JPanel(new FlowLayout(1,70,15));
+		dPanel.setBackground(Color.pink);
+		
+		text =new JLabel("X");
+		text.setHorizontalAlignment(JLabel.CENTER);
+		text.setFont(new Font("Ink Free",Font.BOLD,70));
+		
+		dPanel.add(text);
+		//initialiser cPanel
+		
+		cPanel=new JPanel();
+		
+	    buttons=new JButton[9];
+		
+		cPanel.setLayout(new GridLayout(3,3));
+		for(int i=0;i<9;i++)
+		{
+			buttons[i]=new JButton();
+			buttons[i].addActionListener(this);
+			cPanel.add(buttons[i]);
+		}
+		
+		//initialiser mainPanel
+		mainPanel=new JPanel(new BorderLayout());
+		mainPanel.add(dPanel,BorderLayout.NORTH);
+        mainPanel.add(cPanel,BorderLayout.CENTER);
+		
+        firstTurn();
+		
+		this.setContentPane(mainPanel);
+		this.setVisible(true);
+	}
+	//First turn
+	public void firstTurn()
+	{
+		if(random.nextInt(2)==0)
+		{
+			premierJoueur=true;
+			text.setText("X turn ");
+		}
+		else
+		{
+			premierJoueur=false;
+			text.setText("O turn ");
+		}
+			
+	}
+	
+	
+    
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		for(int i=0;i<9;i++)
+		{
+			if(e.getSource()==buttons[i])
+			{
+				if(premierJoueur)
+				{
+					if(buttons[i].getText() == "")
+					{
+						buttons[i].setText("X");
+						buttons[i].setFont(new Font("Ink Free",Font.BOLD,75));
+						buttons[i].setForeground(Color.green);
+						premierJoueur=false;
+						
+						text.setText("O");
+						checkWinner();
+					}
+				}
+				else {
+					if(buttons[i].getText() == "")
+					{
+						buttons[i].setText("O");
+						buttons[i].setFont(new Font("Ink Free",Font.BOLD,75));
+						buttons[i].setForeground(Color.red);
+						premierJoueur=true;
+						text.setText("X");
+						checkWinner();
+					}
+				}
+			}
+		}
+		
+	}
+	public void checkWinner() {
+		
+		// X
+		
+		if(buttons[0].getText()=="X" && buttons[1].getText()=="X" && buttons[2].getText()=="X")
+			 XWins(0,1,2);
+	    if(buttons[3].getText()=="X" && buttons[4].getText()=="X" && buttons[5].getText()=="X")
+	    	XWins(3,4,5);
+	    if(buttons[6].getText()=="X" && buttons[7].getText()=="X" && buttons[8].getText()=="X")
+	    	XWins(6,7,8);
+	    if(buttons[0].getText()=="X" && buttons[4].getText()=="X" && buttons[8].getText()=="X")
+	    	XWins(0,4,8);
+	    if(buttons[0].getText()=="X" && buttons[3].getText()=="X" && buttons[6].getText()=="X")
+	    	XWins(0,3,6);
+	    if(buttons[2].getText()=="X" && buttons[5].getText()=="X" && buttons[8].getText()=="X")
+	    	XWins(2,5,8);
+	    if(buttons[2].getText()=="X" && buttons[4].getText()=="X" && buttons[6].getText()=="X")
+			 OWins(2,4,6);
+	    if(buttons[1].getText()=="X" && buttons[4].getText()=="X" && buttons[7].getText()=="X")
+			 OWins(1,4,7);
+	    // O
+	    
+	    if(buttons[0].getText()=="O" && buttons[1].getText()=="O" && buttons[2].getText()=="O")
+			 OWins(0,1,2);
+	    if(buttons[3].getText()=="O" && buttons[4].getText()=="O" && buttons[5].getText()=="O")
+	    	OWins(3,4,5);
+	    if(buttons[6].getText()=="O" && buttons[7].getText()=="O" && buttons[8].getText()=="O")
+	    	OWins(6,7,8);
+	    if(buttons[0].getText()=="O" && buttons[4].getText()=="O" && buttons[8].getText()=="O")
+	    	OWins(0,4,8);
+	    if(buttons[0].getText()=="O" && buttons[3].getText()=="O" && buttons[6].getText()=="O")
+	    	OWins(0,3,6);
+	    if(buttons[2].getText()=="O" && buttons[5].getText()=="O" && buttons[8].getText()=="O")
+	    	OWins(2,5,8);
+	    if(buttons[2].getText()=="O" && buttons[4].getText()=="O" && buttons[6].getText()=="O")
+			 OWins(2,4,6);
+	    if(buttons[1].getText()=="O" && buttons[4].getText()=="O" && buttons[7].getText()=="O")
+			 OWins(1,4,7);
+	}
+	private void XWins(int i, int j, int k) {
+		buttons[i].setBackground(Color.yellow);
+		buttons[j].setBackground(Color.yellow);
+		buttons[k].setBackground(Color.yellow);
+		text.setText("X is the winner !");
+		
+	}
+	private void OWins(int i, int j, int k) {
+		buttons[i].setBackground(Color.yellow);
+		buttons[j].setBackground(Color.yellow);
+		buttons[k].setBackground(Color.yellow);
+		text.setText("O is the winner !");
+	}
+	
+public static void main(String[] args) {
+		
+		new TicTacToe();
+	}
+	
+}
+
